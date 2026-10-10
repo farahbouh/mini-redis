@@ -1,19 +1,19 @@
-#include <string>
+#pragma once
 #include <vector>
 #include "client/client.hpp"
 
-class serveur {
+class Serveur {
     public:
         int port;
-        serveur();
-        serveur(int p);
-        ~serveur();
+        bool allume;
+        Serveur();
+        Serveur(int p);
+        ~Serveur();
 
         void allumer();
         void eteindre();
         void ajoutercli(Client c);
         void supprimercli(Client c);
     private:
-        std::vector<std::Client> clients;
-
+        std::vector<Client> clients;
 };

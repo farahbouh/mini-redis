@@ -1,7 +1,7 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra
+CXXFLAGS = -std=c++17 -Wall -Wextra -Isrc
 TARGET = mini-redis
-SRCS = src/main.cpp src/client/client.cpp src/protocol/parser.cpp src/server/server.cpp src/store/store.cpp
+SRCS = src/main.cpp src/client/client.cpp src/protocole/analyseur.cpp src/serveur/serveur.cpp src/magasin/magasin.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(TARGET)

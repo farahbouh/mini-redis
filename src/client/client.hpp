@@ -1,18 +1,21 @@
+#pragma once
 #include <string>
-#include <vector>
-
 
 class Client {
-   private:
-        int id;
-        int port;
-    public:
-        bool estesntligne;
-        Client();
-        ~Client();
+private:
+    int id;
+    int port;
+public:
+    bool estenligne;
 
-        void connecter();
-        void deconnecter();
-        void envoyer(std::string message);
-        bool recevoir();
+    Client();
+    Client(int id);
+    ~Client();
+
+    int getId() const { return id; }
+
+    void connecter(int p);
+    void deconnecter();
+    void envoyer(std::string message);
+    bool recevoir();
 };

@@ -1,12 +1,12 @@
 #include <string>
 #include <vector>
+#pragma once
 
-
-class Parser {
+class Analyseur {
     public:
 
-        Parser();
-        ~Parser();
+        Analyseur();
+        ~Analyseur();
 
         std::vector<std::string> traiter(std::string m);
 };

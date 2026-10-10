@@ -1,15 +1,15 @@
 #include  <vector>
 #include <string>
 
-
-class Store
+#pragma once
+class Stockage
 { 
     private:
         std::vector<std::pair<std::string, std::string>> BD;
 
     public:
-        Store();
-        ~Store();
+        Stockage();
+        ~Stockage();
 
         void mettre(std::string key, std::string v);
         std::string recuperer(std::string clee);
