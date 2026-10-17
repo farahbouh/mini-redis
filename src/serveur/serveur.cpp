@@ -36,3 +36,27 @@ void Serveur::supprimercli(Client c) {
         }
     }
 }
+
+std::string Serveur::executer(const std::string& commande_cli)
+{
+    std::vector<std::string> trame=analyseur.decouper(commande_cli);
+    Requete requete = analyseur.traiter(trame);
+    if (!requete.valide) {
+        return "ERREUR";
+    }
+    if (requete.commande == "SET") {
+        stockeur.mettre(requete.trame[1], requete.trame[2]);
+        return "OK";
+    }
+    else if (requete.commande == "GET") {
+        try {
+            return stockeur.recuperer(requete.trame[1]);
+        } catch (const std::exception&) {
+            return "ERREUR cle inconnue";
+        }
+    }
+    else { 
+        stockeur.supprimer(requete.trame[1]);
+        return "OK";
+    }
+    }
