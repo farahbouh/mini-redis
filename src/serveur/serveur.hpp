@@ -22,7 +22,8 @@ class Serveur {
         void supprimercli(Client c);
 
         std::string executer(const std::string& commande_cli);
-    
+        void lancer();
+
     private:
         std::vector<Client> clients;
 };

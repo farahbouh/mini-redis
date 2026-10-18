@@ -1,4 +1,9 @@
 #include "serveur/serveur.hpp"
+#include <iostream>       
+#include <stdexcept>       
+#include <sys/socket.h>    
+#include <netinet/in.h>   
+#include <unistd.h>    
 
 Serveur::Serveur() {
     this->port = 8080; // Port par défaut
@@ -59,4 +64,40 @@ std::string Serveur::executer(const std::string& commande_cli)
         stockeur.supprimer(requete.trame[1]);
         return "OK";
     }
+}
+void Serveur::lancer()
+{
+    int fd_ecoute = socket(AF_INET, SOCK_STREAM, 0); // création du socket
+
+    int oui = 1;
+    setsockopt(fd_ecoute, SOL_SOCKET, SO_REUSEADDR, &oui, sizeof(oui)); 
+
+    sockaddr_in adresse{}; // préparer l'adresse du serveur
+    adresse.sin_family = AF_INET; // famille d'adresses (IPv4)
+    adresse.sin_addr.s_addr = INADDR_ANY; // accepter les connexions de n'importe quelle adresse
+    adresse.sin_port = htons(port);     // convertir le port en format réseau     
+
+    bind(fd_ecoute, (sockaddr*)&adresse, sizeof(adresse)); // lier le socket à l'adresse et au port
+    listen(fd_ecoute, 5);                               // mettre le socket en mode écoute (5 connexions en file d'attente)
+    std::cout << "En attente sur le port " << port << std::endl;
+
+    int fd_client = accept(fd_ecoute, nullptr, nullptr);  // accepter une connexion entrante 
+    char tampon[1024];
+    while (true) {
+        ssize_t n = recv(fd_client, tampon, sizeof(tampon), 0); // recevoir des données du client
+        
+        if (n > 0) {
+            std::string ligne(tampon, n);
+            std::cout << "Recu : " << ligne;
+
+            std::string reponse = executer(ligne);   // le serveur appelle sa propre méthode
+            reponse += "\n";
+
+            if (send(fd_client, reponse.c_str(), reponse.size(), 0) < 0) {
+                perror("send");
+            }
+        }
     }
+        close(fd_client); // fermer la connexion avec le client
+    close(fd_ecoute); // fermer le socket d'écoute
+}
