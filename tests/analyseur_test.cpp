@@ -51,7 +51,7 @@ int main()
     echecs += verifier_decoupage(a, "espaces autour",    "  get a  ",   {"get", "a"});
     echecs += verifier_decoupage(a, "ligne vide",        "",            {});
     echecs += verifier_decoupage(a, "que des espaces",   "   ",         {});
-
+    echecs += verifier_decoupage(a, "fin de ligne nc", "get a\r\n", {"get", "a"});
     if (echecs == 0)
         std::cout << "Tous les tests passent." << std::endl;
     else

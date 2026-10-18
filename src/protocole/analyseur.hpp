@@ -13,6 +13,6 @@ class Analyseur {
 
         Analyseur();
         ~Analyseur();
-        Requete  traiter(const std::vector<std::string>& trame);
+        Requete traiter(const std::vector<std::string>& trame);
         std::vector<std::string> decouper(const std::string& ligne);
 };

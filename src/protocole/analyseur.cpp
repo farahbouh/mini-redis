@@ -58,7 +58,7 @@ std::vector<std::string> Analyseur::decouper(const std::string& ligne) {
     std::string mot;
 
     for (char c : ligne) {
-        if (c == ' ') {
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
             // espace = mot est fini
             if (!mot.empty()) {
                 trame.push_back(mot);
