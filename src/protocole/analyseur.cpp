@@ -74,4 +74,13 @@ std::vector<std::string> Analyseur::decouper(const std::string& ligne) {
     }
     return trame;
 }
-    
+std::vector<std::string> Analyseur::extraire_lignes(std::string& tampon) {
+    std::vector<std::string> lignes;
+    size_t pos;
+
+    while ((pos = tampon.find('\n')) != std::string::npos) {
+        lignes.push_back(tampon.substr(0, pos));   // la ligne - \n
+        tampon.erase(0, pos + 1);                  // on la retire, \n compris
+    }
+    return lignes;                                 // ce qui reste dans tampon = ligne incomplète
+}

@@ -52,6 +52,20 @@ int main()
     echecs += verifier_decoupage(a, "ligne vide",        "",            {});
     echecs += verifier_decoupage(a, "que des espaces",   "   ",         {});
     echecs += verifier_decoupage(a, "fin de ligne nc", "get a\r\n", {"get", "a"});
+    
+    // extraire_lignes
+    std::string t1 = "set a 1\nget a\n";
+    auto l1 = a.extraire_lignes(t1);
+    echecs += (l1 == std::vector<std::string>{"set a 1", "get a"} && t1.empty()) ? 0 : 1;
+
+    std::string t2 = "set a 1\nge";
+    auto l2 = a.extraire_lignes(t2);
+    echecs += (l2 == std::vector<std::string>{"set a 1"} && t2 == "ge") ? 0 : 1;
+
+    std::string t3 = "ge";
+    auto l3 = a.extraire_lignes(t3);
+    echecs += (l3.empty() && t3 == "ge") ? 0 : 1;
+    
     if (echecs == 0)
         std::cout << "Tous les tests passent." << std::endl;
     else

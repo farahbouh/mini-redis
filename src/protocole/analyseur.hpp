@@ -10,9 +10,9 @@ struct Requete {
 
 class Analyseur {
     public:
-
         Analyseur();
         ~Analyseur();
         Requete traiter(const std::vector<std::string>& trame);
         std::vector<std::string> decouper(const std::string& ligne);
+        std::vector<std::string> extraire_lignes(std::string& tampon);
 };

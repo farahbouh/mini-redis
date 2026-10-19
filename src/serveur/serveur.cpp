@@ -83,23 +83,22 @@ void Serveur::lancer()
     while (allume){
         int fd_client = accept(fd_ecoute, nullptr, nullptr);  // accepter une connexion entrante 
         char tampon[1024];
+        std::string tampon_ligne;                      // un tampon par client
         
         while (true) {
-            ssize_t n = recv(fd_client, tampon, sizeof(tampon), 0); // recevoir des données du client
-            
-            if (n > 0) {
-                std::string ligne(tampon, n);
-                std::cout << "Recu : " << ligne;
+            ssize_t n = recv(fd_client, tampon, sizeof(tampon), 0);
+            if (n <= 0) {
+                break;
+            }
 
-                std::string reponse = executer(ligne);   // le serveur appelle sa propre méthode
-                reponse += "\n";
+            tampon_ligne += std::string(tampon, n);
 
+            for (const std::string& ligne : analyseur.extraire_lignes(tampon_ligne)) {
+                std::string reponse = executer(ligne) + "\n";
                 if (send(fd_client, reponse.c_str(), reponse.size(), 0) < 0) {
                     perror("send");
+                    break;
                 }
-            }
-            if (n <= 0) {         
-                break;             
             }
         }
         close(fd_client); // fermer la connexion avec le client
