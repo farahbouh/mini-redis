@@ -80,24 +80,30 @@ void Serveur::lancer()
     bind(fd_ecoute, (sockaddr*)&adresse, sizeof(adresse)); // lier le socket à l'adresse et au port
     listen(fd_ecoute, 5);                               // mettre le socket en mode écoute (5 connexions en file d'attente)
     std::cout << "En attente sur le port " << port << std::endl;
-
-    int fd_client = accept(fd_ecoute, nullptr, nullptr);  // accepter une connexion entrante 
-    char tampon[1024];
-    while (true) {
-        ssize_t n = recv(fd_client, tampon, sizeof(tampon), 0); // recevoir des données du client
+    while (allume){
+        int fd_client = accept(fd_ecoute, nullptr, nullptr);  // accepter une connexion entrante 
+        char tampon[1024];
         
-        if (n > 0) {
-            std::string ligne(tampon, n);
-            std::cout << "Recu : " << ligne;
+        while (true) {
+            ssize_t n = recv(fd_client, tampon, sizeof(tampon), 0); // recevoir des données du client
+            
+            if (n > 0) {
+                std::string ligne(tampon, n);
+                std::cout << "Recu : " << ligne;
 
-            std::string reponse = executer(ligne);   // le serveur appelle sa propre méthode
-            reponse += "\n";
+                std::string reponse = executer(ligne);   // le serveur appelle sa propre méthode
+                reponse += "\n";
 
-            if (send(fd_client, reponse.c_str(), reponse.size(), 0) < 0) {
-                perror("send");
+                if (send(fd_client, reponse.c_str(), reponse.size(), 0) < 0) {
+                    perror("send");
+                }
+            }
+            if (n <= 0) {         
+                break;             
             }
         }
-    }
         close(fd_client); // fermer la connexion avec le client
+    }
+       
     close(fd_ecoute); // fermer le socket d'écoute
 }

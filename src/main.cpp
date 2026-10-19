@@ -5,6 +5,7 @@
 int main()
 {
     Serveur s;
+    s.allumer();
     s.lancer();
     return 0;
 }
