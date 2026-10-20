@@ -1,14 +1,15 @@
 #pragma once
+#include <string>
 #include <vector>
 #include "client/client.hpp"
 #include "stockage/stockage.hpp"
 #include "protocole/analyseur.hpp"
+#include <atomic> 
 
 class Serveur {
     public:
         int port;
-        bool allume;
-
+        std::atomic<bool> allume; 
         Stockage stockeur;
         Analyseur analyseur;
 
@@ -26,4 +27,6 @@ class Serveur {
 
     private:
         std::vector<Client> clients;
+        void gerer_client(int fd_client);
+        std::mutex mtx_threads;
 };

@@ -3,7 +3,10 @@
 #include <stdexcept>       
 #include <sys/socket.h>    
 #include <netinet/in.h>   
-#include <unistd.h>    
+#include <unistd.h>  
+#include <thread>  
+#include <atomic>
+#include <thread>
 
 Serveur::Serveur() {
     this->port = 8080; // Port par défaut
@@ -80,29 +83,35 @@ void Serveur::lancer()
     bind(fd_ecoute, (sockaddr*)&adresse, sizeof(adresse)); // lier le socket à l'adresse et au port
     listen(fd_ecoute, 5);                               // mettre le socket en mode écoute (5 connexions en file d'attente)
     std::cout << "En attente sur le port " << port << std::endl;
-    while (allume){
-        int fd_client = accept(fd_ecoute, nullptr, nullptr);  // accepter une connexion entrante 
-        char tampon[1024];
-        std::string tampon_ligne;                      // un tampon par client
-        
-        while (true) {
-            ssize_t n = recv(fd_client, tampon, sizeof(tampon), 0);
-            if (n <= 0) {
-                break;
-            }
+     while (allume) {
+        int fd_client = accept(fd_ecoute, nullptr, nullptr);
+        if (fd_client < 0) {
+            if (!allume) break;
+            continue;
+        }
+        std::thread(&Serveur::gerer_client, this, fd_client).detach();
+    }  
+    close(fd_ecoute); // fermer le socket d'écoute
+}
 
-            tampon_ligne += std::string(tampon, n);
+void Serveur::gerer_client(int fd_client)
+{
+    char tampon[1024];
+    std::string tampon_ligne;
 
-            for (const std::string& ligne : analyseur.extraire_lignes(tampon_ligne)) {
-                std::string reponse = executer(ligne) + "\n";
-                if (send(fd_client, reponse.c_str(), reponse.size(), 0) < 0) {
-                    perror("send");
-                    break;
-                }
+    while (allume) {
+        ssize_t n = recv(fd_client, tampon, sizeof(tampon), 0);
+        if (n <= 0) break;   // client déconnecté ou erreur
+
+        tampon_ligne.append(tampon, n);
+
+        for (const std::string& ligne : analyseur.extraire_lignes(tampon_ligne)) {
+            std::string reponse = executer(ligne) + "\n";
+            if (send(fd_client, reponse.c_str(), reponse.size(), 0) < 0) {
+                close(fd_client);
+                return;
             }
         }
-        close(fd_client); // fermer la connexion avec le client
     }
-       
-    close(fd_ecoute); // fermer le socket d'écoute
+    close(fd_client);
 }

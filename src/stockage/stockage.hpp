@@ -1,12 +1,14 @@
-#include  <vector>
-#include <string>
-
 #pragma once
+#include <vector>
+#include <string>
+#include <mutex>
+
+
 class Stockage
 { 
     private:
         std::vector<std::pair<std::string, std::string>> BD;
-
+        mutable std::mutex mtx;
     public:
         Stockage();
         ~Stockage();

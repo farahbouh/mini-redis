@@ -20,6 +20,7 @@ Stockage::~Stockage()
 ********************/
 void Stockage::mettre(std::string c, std::string v)
 {
+    std::lock_guard<std::mutex> lock(mtx);
     for (auto &pair : BD) {
         if (pair.first == c) {
             pair.second = v; // Met à jour la valeur si la clé existe déjà
@@ -30,6 +31,7 @@ void Stockage::mettre(std::string c, std::string v)
 }
 std::string Stockage::recuperer(std::string clee)
 {
+    std::lock_guard<std::mutex> lock(mtx);
     for (const auto &pair : BD) {
         if (pair.first == clee) {
             return pair.second;
@@ -38,6 +40,7 @@ std::string Stockage::recuperer(std::string clee)
     throw std::runtime_error("clee n'existe pas");
 }
 void Stockage::supprimer(std::string clee){
+     std::lock_guard<std::mutex> lock(mtx);
     for (auto it = BD.begin(); it != BD.end(); ++it) {
         if (it->first == clee) {
             BD.erase(it);
