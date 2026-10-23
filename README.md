@@ -17,9 +17,9 @@
 
 ## Pourquoi ce projet ?
 
-Projet personnel : comprendre comment fonctionne un serveur TCP multi-clients en C++,
-en réimplémentant un mini Redis - un stockage clé-valeur en mémoire, accessible via
-un protocole texte simple.
+Serveur TCP multithread en C++ inspiré du modèle Redis, avec stockage clé-valeur en mémoire et gestion de plusieurs clients simultanément.
+
+Le projet a été conçu pour explorer les mécanismes de communication réseau, la concurrence et le traitement des commandes côté serveur.
 
 ---
 
